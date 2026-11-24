@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+
+      - name: Run tests
+        run: |
+          flake8 --exclude=venv* --statistics
+          pytest -v
+
+      - name: Run code quality checks
+        run: |
+          black --check --exclude=venv .
+          mypy --exclude venv .
+          vulture saludar.py
+
+      - name: Run SAST
+        run: |
+          bandit -r . -x ./venv,./test_saludar.py
