@@ -24,9 +24,23 @@ jobs:
             source venv/bin/activate
             flake8 --exclude=venv* --statistics
             pytest -v
+      # Step 4: ejecutamos controles de calidad de codigo
+      - run:
+          name: run code quality checks
+          command: |
+            source venv/bin/activate
+            black --check --exclude=venv .
+            mypy --exclude venv .
+            vulture saludar.py
+      # Step 5: ejecutamos analisis de seguridad estatico (SAST)
+      - run:
+          name: run SAST
+          command: |
+            source venv/bin/activate
+            bandit -r . -x ./venv,./test_saludar.py
 #      - setup_remote_docker:
 #          docker_layer_caching: true
-      # Step 4: Docker build
+      # Step 6: Docker build
       - run:
           name: Build and Push Docker
           command: |
