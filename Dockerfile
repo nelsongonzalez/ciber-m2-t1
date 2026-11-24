@@ -1,8 +1,14 @@
-FROM alpine:3.12
+FROM alpine:3.24
+
+RUN apk add --no-cache python3 \
+    && addgroup -S appgroup \
+    && adduser -S appuser -G appgroup
 
 WORKDIR /myfirstpipeline
 
-ADD . /myfirstpipeline
+COPY --chown=appuser:appgroup saludar.py .
 
-RUN apk add python3
+USER appuser
+
+CMD ["python3", "saludar.py"]
 

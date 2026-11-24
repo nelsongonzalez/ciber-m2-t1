@@ -1,0 +1,12 @@
+.git
+.github
+.circleci
+.mypy_cache
+.pytest_cache
+__pycache__
+*.pyc
+venv
+.venv
+test_*.py
+requirements.txt
+Dockerfile
